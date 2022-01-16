@@ -1,2 +1,0 @@
-1. (Re-)formatted lua files
-2. Fixed detonation delay bug
