@@ -71,6 +71,12 @@ function ENT:Explode()
 end
 
 function ENT:PhysicsCollide(data, phys)
+	if IsValid(data.HitEntity) and data.HitEntity:GetClass() == "cod-c4" then 
+		data.OurNewVelocity = data.OurOldVelocity
+		data.TheirNewVelocity = data.TheirOldVelocity
+		return
+	end
+
 	self:EmitSound("hoff/mpl/seal_c4/satchel_plant.wav")
 	if self:IsValid() and not self.Hit then
 		self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)

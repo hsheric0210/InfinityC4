@@ -36,6 +36,12 @@ hook.Add("Initialize", "createc4convar", function()
 	if not ConVarExists("c4_enable") then
 		CreateConVar("c4_enable", 1)
 	end
+	if not ConVarExists("c4_throw_delay") then
+		CreateConVar("c4_throw_delay", 0.2)
+	end
+	if not ConVarExists("c4_explode_delay") then
+		CreateConVar("c4_explode_delay", 0.15)
+	end
 end)
 
 SWEP.Offset = {
@@ -120,12 +126,13 @@ function SWEP:PrimaryAttack()
 			self:EmitSound("hoff/mpl/seal_c4/c4_click.wav")
 		end
 	end)
+	local delay = GetConVar("c4_explode_delay"):GetFloat()
 	if self.Owner:Alive() and self.Owner:IsValid() then
 		-- thanks chief tiger
 		local Owner = self.Owner
 		if SERVER then
 			for k, v in pairs(Owner.C4s) do
-				timer.Simple(.05 * k, function()
+				timer.Simple(delay * k, function()
 					if IsValid(v) then
 						v:Explode()
 					end
@@ -136,7 +143,7 @@ function SWEP:PrimaryAttack()
 	end
 
 	self:SetNextPrimaryFire(CurTime() + 1.1)
-	self:SetNextSecondaryFire(CurTime() + .01)
+	self:SetNextSecondaryFire(CurTime() + GetConVar("c4_throw_delay"):GetFloat())
 end
 
 function SWEP:SecondaryAttack()
@@ -176,7 +183,7 @@ function SWEP:SecondaryAttack()
 		table.insert(self.Owner.C4s, ent)
 	end
 	self:SetNextPrimaryFire(CurTime() + 0.1)
-	self:SetNextSecondaryFire(CurTime() + 0.2)
+	self:SetNextSecondaryFire(CurTime() + GetConVar("c4_throw_delay"):GetFloat())
 end
 
 function SWEP:ShouldDropOnDie()
